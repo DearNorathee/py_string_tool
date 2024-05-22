@@ -4,6 +4,83 @@ from thefuzz import fuzz
 from typing import Union, Literal
 import pandas as pd
 
+def split_sentence(text, delimiter, inplace=True):
+    """
+    Split elements of a list of strings using a specified delimiter and optionally modify the list in place.
+
+    Parameters
+    ----------
+    text : list of str
+        List of strings to be split.
+        
+    delimiter : str
+        The delimiter to use for splitting each string in the list.
+        
+    inplace : bool, default True
+        If True, modifies the original list `text` in place and returns None.
+        If False, creates a copy of the list, modifies the copy, and returns the modified list.
+
+    Returns
+    -------
+    list of str or None
+        If `inplace` is False, returns a new list with the split and trimmed strings.
+        If `inplace` is True, modifies the original list in place and returns None.
+
+    Notes
+    -----
+    - The function trims leading and trailing spaces from each string before and after splitting.
+    - Empty strings resulting from the split are not included in the final list.
+    - If `inplace` is True, the function operates on the original list and does not return a new list.
+    - If `inplace` is False, the function operates on a copy of the list and returns the modified copy.
+
+    Examples
+    --------
+    >>> text = ["Hello, world", "Python is great"]
+    >>> St_SplitSentence(text, ",", inplace=False)
+    ['Hello', 'world', 'Python is great']
+    
+    >>> text = ["Hello, world", "Python is great"]
+    >>> St_SplitSentence(text, " ", inplace=True)
+    >>> text
+    ['Hello,', 'world', 'Python', 'is', 'great']
+    """
+    if not inplace:
+        text = text.copy()
+        
+    i = 0
+    while i < len(text):
+        text[i] = text[i].strip()  # Trim the spaces at both ends
+        if delimiter in text[i]:
+            # Split the string using the delimiter
+            split_strings = text[i].split(delimiter)
+            
+            # Remove the original string from the list
+            del text[i]
+            
+            # Insert the split strings back into the original list at the same position
+            for split_str in reversed(split_strings):
+                split_str = split_str.strip()  # Remove leading and trailing spaces
+                if split_str:  # Only add non-empty strings
+                    text.insert(i, split_str)
+        else:
+            i += 1  # Only increment if no split occurred to handle new inserted strings
+            
+    return text if not inplace else None
+
+def remove_from_list(lst, char="♪"):
+    # Function to remove elements that start with a specific character (in this case "♪")
+    # can generalize more to 
+    # remove_from_list(lst,start_with = None,end_with = None,logic = "or")
+    return [element for element in lst if not str(element).startswith(char)]
+
+def text_after(text,delimiter):
+    after_part = text.split(delimiter)[-1]
+    return after_part
+
+def text_before(text,delimiter):
+    before_part = text.split(delimiter)[0]
+    return before_part
+
 def replace(text,to_replace,replace_by):
     # unit_tested
     for word in to_replace:
