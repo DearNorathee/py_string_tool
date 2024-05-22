@@ -2,6 +2,38 @@ from difflib import get_close_matches
 from difflib import SequenceMatcher
 from thefuzz import fuzz
 from typing import Union, Literal
+import pandas as pd
+
+def replace(text,to_replace,replace_by):
+    # unit_tested
+    for word in to_replace:
+        new_text = text.replace(word, replace_by)
+        
+    return new_text
+
+def num_format0(num, max_num=None, digit=None):
+    # ChatGPT solo
+    # tested
+    if max_num is not None:
+        num_str = str(num).zfill(len(str(max_num)))
+    elif digit is not None:
+        num_str = str(num).zfill(digit)
+    else:
+        num_str = str(num)
+    # print(num_str)
+    return num_str
+
+def format_index_num(to_format_num, total_num):
+    # imported from C:/Users/Heng2020/OneDrive/D_Code/Python/Python NLP/NLP 02/NLP_2024/NLP 11_Local_TTS
+    # tested via pd_split_into_dict_df
+    # adding leading 0 to the number
+    # Determine the number of digits in the largest number
+    total_digits = len(str(total_num))
+    
+    # Format the number with leading zeros
+    formatted_num = f"{to_format_num:0{total_digits}d}"
+    
+    return formatted_num
 
 def clean_filename(ori_name):
     # update01: deal with '\n' case
@@ -21,7 +53,7 @@ def clean_filename(ori_name):
 def replace_backslash(s: str):
     return s.replace('\\','/')
 
-def detect_language(input_text: Union[str,list[str]], 
+def detect_language(input_text: Union[str,list[str],pd.Series], 
                     return_as: Literal["full_name","2_chr_code","3_chr_code","langcodes_obj"] = "full_name"):
     import pandas as pd
     from langdetect import detect
