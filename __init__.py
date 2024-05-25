@@ -1,4 +1,4 @@
-from py_string_tool.utils import *
+from py_string_tool.utils_pst import *
 
 __version__ = "0.1.3"
 
