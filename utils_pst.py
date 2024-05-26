@@ -4,6 +4,75 @@ from thefuzz import fuzz
 from typing import Union, Literal
 import pandas as pd
 
+def custom_sort(lst, begin_with, end_with,ascending=True, string_last = True):
+    import re
+    # medium tested
+    
+    # what if there's no begin_with or end_with?
+
+    # cover when begin_with is string
+    # cover when end_with is string
+    
+    sort_by = []
+    
+    have_begin = []
+    have_end = []
+    
+    large_num = 2*len(lst)
+    count = 0
+    # ['m.>30', 'b.-30to-20', 'a.<-30', 'l.21to30', 'd.-14to-10', 'j.11to15', 'i.6to10', 'h.1to5', 'e.-9to-5', 'f.-4to-1', 'c.-19to-15', 'g.0', 'k.16to20']
+    # check only first element
+    if isinstance(lst[0], str):
+        match = re.search(r'[a-zA-Z]\.', lst[0])
+    else:
+        # If it's a number 
+        match = False
+    
+    if match:
+        sorted_list = sorted(lst,reverse=not ascending)
+        return sorted_list
+    for val in lst:
+        try:
+            num = float(val)
+            sort_by.append(num)
+        except ValueError:
+            num_02 = val.split(" ")[0]
+            num_03 = pst.St_GetNum(num_02)
+            
+            # string case
+            if val in begin_with:
+                order_index = -large_num + begin_with.index(val)
+                sort_by.append(order_index)
+                
+            elif val in end_with:
+                order_index = large_num + begin_with.index(val)
+                sort_by.append(order_index)
+                
+            else:
+                if num_03 is False:
+                    
+                    # if val not in either begin_with nor end_with
+                    if string_last:
+                        # put string at the end
+                        order_index = large_num + count
+                        count += 1
+                    else:
+                        # put string at the beginning
+                        order_index = -large_num + count
+                        count += 1
+                    sort_by.append(order_index)
+                else:
+                    sort_by.append(num_03)
+                
+                    
+                    
+    # sort_by.sort(reverse = not ascending)
+
+                    
+    
+    sorted_list = [x for x, y in sorted(zip(lst, sort_by), key=lambda pair: pair[1])]
+    # print(sorted_list01)
+    return sorted_list
 
 def similar_score(word_in, compare_list, cut_off=0,return_word=True,return_score=False):
     # Assume that word_in is only string
@@ -402,8 +471,6 @@ def replace_last(s: str, oldvalue, newvalue):
         s = s[:last_comma_index] + newvalue + s[last_comma_index + 1:]
     return s
 
-def replace_backslash(s):
-    pass
 def is_empty_string(s):
     # Returns True if the string is empty or whitespace, False otherwise
     # imported from "C:\Users\Heng2020\OneDrive\Python NLP\NLP 08_VocabList\VocatList_func01.py"
