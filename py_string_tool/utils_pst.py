@@ -3,15 +3,137 @@ from difflib import SequenceMatcher
 from thefuzz import fuzz
 from typing import Union, Literal
 import pandas as pd
+from typing import List, Tuple, Literal, Any
+
+# def similar_score(word_in, compare_list, cut_off=0,return_word=True,return_score=False):
+#     # Assume that word_in is only string
+#     from thefuzz import fuzz
+#     outlist = []
+#     for text in compare_list:
+#         similar_score = fuzz.WRatio(word_in,text)
+#         string_similar = (text,similar_score)
+#         outlist.append(string_similar)
+#     outlist.sort(key = lambda x:x[1],reverse=True)
+#     return outlist
 
 
-def similar_score(word_in, compare_list, cut_off=0,return_word=True,return_score=False):
+def text_between(
+        texts: Union[str,List[str]],
+        prefixes: Union[str, List[str]],
+        suffixes: Union[str, List[str]],
+        include_start_delim: bool = False,
+        include_end_delim: bool = False,
+        return_as_empty: bool = True
+    ) -> List[str]:
+    # medium tested
+    # seems to work when suffix is empty string("") now
+    # include_start_delim & include_end_delim True seems to also work
+
+    # still not tested when prefix is empty string("")
+    def _text_between_h1(
+        text: str,
+        prefixes: Union[str, List[str]],
+        suffixes: Union[str, List[str]],
+        include_start_delim: bool = False,
+        include_end_delim: bool = False,
+        return_as_empty: bool = True
+    ) -> str:
+        import re
+        """
+        Extracts the text between specified prefixes and suffixes.
+
+        Parameters
+        ----------
+        text : str
+            The input text to search within.
+        prefixes : Union[str, List[str]]
+            A single prefix or a list of prefixes to search for.
+        suffixes : Union[str, List[str]]
+            A single suffix or a list of suffixes to search for.
+        include_start_delim : bool, optional
+            If True, include the prefix in the result.
+        include_end_delim : bool, optional
+            If True, include the suffix in the result.
+        return_as_empty : bool, optional
+            If True, return an empty string if no match is found.
+            If False, return None if no match is found.
+
+        Returns
+        -------
+        str
+            The extracted text between the specified prefixes and suffixes.
+        """
+        if isinstance(prefixes, str):
+            prefixes_in = [prefixes]
+        else:
+            prefixes_in = list(prefixes)
+        if isinstance(suffixes, str):
+            suffixes_in = [suffixes]
+        else:
+            suffixes_in = list(suffixes)
+
+        # sort prefixes and suffixes to make sure that "" is the last option to match
+        prefixes_in = sorted(prefixes_in, key=lambda x: x == "")
+        suffixes_in = sorted(suffixes_in, key=lambda x: x == "")
+
+        for prefix in prefixes_in:
+            for suffix in suffixes_in:
+                pattern = re.escape(prefix) + "(.*?)" + re.escape(suffix)
+                match = re.search(pattern, text)
+                if match:
+                    start, end = match.span(1)
+                    if include_start_delim:
+                        start = match.start(0)
+                    if include_end_delim:
+                        end = match.end(0)
+                    
+                    if prefix == "":
+                        start = 0
+                    if suffix == "":
+                        end = len(text)
+
+                    out_str = text[start:end]
+                    return out_str
+
+        return "" if return_as_empty else text
+
+    if isinstance(texts, str):
+        texts_in = [texts]
+    else:
+        texts_in = list(texts)
+
+    out_list = []
+    for text in texts_in:
+        ans_str = _text_between_h1(text, prefixes, suffixes, include_start_delim, include_end_delim, return_as_empty)
+        out_list.append(ans_str)
+        
+    return out_list
+
+
+def similar_score(
+        word_in:str
+        ,compare_list:List[str]
+        ,cut_off:float = 0
+        ,return_word:bool = True
+        ,return_score:bool = False
+        ,score_engine:Literal["thefuzz","rapidfuzz"] = "rapidfuzz"
+        ):
     # Assume that word_in is only string
-    from thefuzz import fuzz
+    # from thefuzz import fuzz
+    import thefuzz.fuzz
+    import rapidfuzz.fuzz
     outlist = []
     for text in compare_list:
-        similar_score = fuzz.WRatio(word_in,text)
-        string_similar = (text,similar_score)
+        similar_score_thefuzz = thefuzz.fuzz.WRatio(word_in,text)
+        similar_score_rapidfuzz = rapidfuzz.fuzz.WRatio(word_in,text)
+
+        if score_engine in ["thefuzz"]:
+            string_similar = (text,similar_score_thefuzz)
+        elif score_engine in ["rapidfuzz"]:
+            string_similar = (text,similar_score_rapidfuzz)
+        else:
+            raise ValueError("score_engine should be 'thefuzz' or 'rapidfuzz'")
+        
         outlist.append(string_similar)
     outlist.sort(key = lambda x:x[1],reverse=True)
     return outlist
