@@ -341,7 +341,7 @@ def clean_filename(ori_name):
     # update01: deal with '\n' case
     # imported from NLP 01/NLP 03_11LabsBulk
     # EDIT: remove dots from replace_with_empty
-    replace_with_empty = ["?",":",'"' , "\\" ] 
+    replace_with_empty = ["?",":",'"' , "\\","*", '"', "<", ">", "|" ] 
     replace_with_space = ["\n", "/" ]
     
     new_name = ori_name
