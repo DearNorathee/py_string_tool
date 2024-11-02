@@ -308,6 +308,7 @@ def text_before(text, suffix_list, return_as_empty=True, include_delimiter=False
 
 def replace(text,to_replace,replace_by):
     # unit_tested
+    
     for word in to_replace:
         new_text = text.replace(word, replace_by)
         

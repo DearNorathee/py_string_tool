@@ -1,7 +1,12 @@
 Metadata-Version: 2.1
-Name: py-string-tool
+Name: py_string_tool
 Version: 0.1.4
 Summary: useful additional string functions
 Author: Dear Norathee
 License: MIT
 License-File: LICENSE
+Requires-Dist: thefuzz
+Requires-Dist: langdetect
+Requires-Dist: pandas
+Requires-Dist: python_wizard>=0.1.1
+Requires-Dist: python-Levenshtein
