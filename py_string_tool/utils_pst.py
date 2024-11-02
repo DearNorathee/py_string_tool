@@ -288,7 +288,7 @@ def text_after(text, prefix_list, return_as_empty=True, include_delimiter=False)
     else:
         return text
 
-def text_before(text, suffix_list, return_as_empty=True, include_delimiter=False):
+def text_before(text, suffix_list: Union[str, List[str]], return_as_empty=True, include_delimiter=False) -> str:
     if isinstance(suffix_list, str):
         suffix_list = [suffix_list]
     
@@ -306,11 +306,12 @@ def text_before(text, suffix_list, return_as_empty=True, include_delimiter=False
         return text
 
 
-def replace(text,to_replace,replace_by):
+def replace(
+        text:str,to_replace:Union[str,List[str]],replace_by:str):
     # unit_tested
-    
+    new_text: str = text
     for word in to_replace:
-        new_text = text.replace(word, replace_by)
+        new_text = new_text.replace(word, replace_by)
         
     return new_text
 
@@ -501,7 +502,7 @@ def text_after(text, prefix_list, return_as_empty=True, include_delimiter=False)
     else:
         return text
 
-def text_before(text, suffix_list, return_as_empty=True, include_delimiter=False):
+def text_before(text, suffix_list: Union[str, List[str]], return_as_empty=True, include_delimiter=False) -> str:
     if isinstance(suffix_list, str):
         suffix_list = [suffix_list]
     
