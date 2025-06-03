@@ -10,3 +10,4 @@ py_string_tool.egg-info/SOURCES.txt
 py_string_tool.egg-info/dependency_links.txt
 py_string_tool.egg-info/requires.txt
 py_string_tool.egg-info/top_level.txt
+tests/test_utils_pst.py
