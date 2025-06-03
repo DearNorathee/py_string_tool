@@ -580,18 +580,18 @@ def not_empty_string(text):
 def get_num(
     texts:str|list[str]
     ,exclude:str|list[str] = "" 
-    ,begin_with_num:bool = True 
+    ,begin_with_num:bool = False 
         ) -> Union[int,float,list[int|float]]:
     
     if isinstance(texts,str):
         return get_num_from_text(texts,exclude,begin_with_num)
-    elif isinstance(texts,str):
+    elif isinstance(texts,list):
         return [get_num_from_text(text,exclude,begin_with_num) for text in texts]
 
 def get_num_from_text(
         text:str|float|int    
         ,exclude:str|list[str] = ""
-        , begin_with_num:bool = True):
+        , begin_with_num:bool = False):
     # little tested
     import re
     
